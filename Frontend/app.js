@@ -1,4 +1,4 @@
-const BACKEND_BASE_URL = 'http://localhost:3000';
+const BACKEND_BASE_URL = 'https://complaints-registration-platform-full-4lxq.onrender.com';
 const API_URL = `${BACKEND_BASE_URL}/api`;
 
 // State
