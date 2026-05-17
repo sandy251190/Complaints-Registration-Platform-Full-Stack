@@ -114,11 +114,12 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         // Set cookie
+        const isProduction = process.env.FRONTEND_URL && process.env.FRONTEND_URL.startsWith('https');
         res.cookie('token', token, {
-            httpOnly: false, // As requested
-            secure: false, // As requested
-            sameSite: 'lax', // As requested
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            httpOnly: false,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         res.json({ name: user.name, email: user.email, role: user.role });
