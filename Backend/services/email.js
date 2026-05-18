@@ -12,9 +12,17 @@ const transporter = nodemailer.createTransport({
     socketTimeout: 30000
 });
 
+transporter.verify((error, success) => {
+    if (error) {
+        console.log('SMTP Error:', error);
+    } else {
+        console.log('SMTP Server is ready');
+    }
+});
+
 const sendOTP = async (email, otp) => {
     const mailOptions = {
-        from: process.env.GMAIL_USER,
+        from: process.env.EMAIL_USER,
         to: email,
         subject: 'Your OTP for Complaints Registration Platform',
         text: `Your OTP is: ${otp}. It will expire in 10 minutes.`
