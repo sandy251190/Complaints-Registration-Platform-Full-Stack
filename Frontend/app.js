@@ -1,4 +1,4 @@
-const BACKEND_BASE_URL = 'https://complaints-registration-platform-full-4lxq.onrender.com';
+const BACKEND_BASE_URL = 'http://localhost:3001';
 const API_URL = `${BACKEND_BASE_URL}/api`;
 
 // State
@@ -137,41 +137,10 @@ logoutBtn.addEventListener('click', async () => {
 });
 
 // Registration Flow
-let registrationEmail = '';
-
-document.getElementById('send-otp-form').addEventListener('submit', async (e) => {
+document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('reg-name').value;
     const email = document.getElementById('reg-email').value;
-    const errorEl = document.getElementById('register-error');
-
-    try {
-        errorEl.classList.add('hidden');
-        await apiFetch('/auth/send-otp', {
-            method: 'POST',
-            body: JSON.stringify({ name, email })
-        });
-        registrationEmail = email;
-        document.getElementById('reg-step-1').classList.add('hidden');
-        document.getElementById('reg-step-2').classList.remove('hidden');
-    } catch (error) {
-        errorEl.textContent = error.message;
-        errorEl.classList.remove('hidden');
-    }
-});
-
-document.getElementById('verify-otp-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const otp = document.getElementById('reg-otp').value;
-    const errorEl = document.getElementById('register-error');
-
-    // Proceed to password setup
-    document.getElementById('reg-step-2').classList.add('hidden');
-    document.getElementById('reg-step-3').classList.remove('hidden');
-});
-
-document.getElementById('setup-password-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
     const password = document.getElementById('reg-password').value;
     const confirmPassword = document.getElementById('reg-confirm-password').value;
     const errorEl = document.getElementById('register-error');
@@ -182,23 +151,16 @@ document.getElementById('setup-password-form').addEventListener('submit', async 
         return;
     }
 
-    const otp = document.getElementById('reg-otp').value;
-
     try {
         errorEl.classList.add('hidden');
         await apiFetch('/auth/register', {
             method: 'POST',
-            body: JSON.stringify({ email: registrationEmail, otp, password })
+            body: JSON.stringify({ name, email, password })
         });
         alert('Registration successful! Please login.');
         showView('login');
-        // Reset forms
-        document.getElementById('send-otp-form').reset();
-        document.getElementById('verify-otp-form').reset();
-        document.getElementById('setup-password-form').reset();
-        document.getElementById('reg-step-1').classList.remove('hidden');
-        document.getElementById('reg-step-2').classList.add('hidden');
-        document.getElementById('reg-step-3').classList.add('hidden');
+        // Reset form
+        document.getElementById('register-form').reset();
     } catch (error) {
         errorEl.textContent = error.message;
         errorEl.classList.remove('hidden');

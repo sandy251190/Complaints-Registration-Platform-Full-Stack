@@ -57,50 +57,25 @@
                     <h2>Create Account</h2>
                     <p class="subtitle">Join us to register your complaints.</p>
 
-                    <!-- Step 1: Name & Email -->
-                    <div id="reg-step-1">
-                        <form id="send-otp-form">
-                            <div class="form-group">
-                                <label for="reg-name"><i class="fas fa-user"></i> Full Name</label>
-                                <input type="text" id="reg-name" placeholder="John Doe" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="reg-email"><i class="fas fa-envelope"></i> Email Address</label>
-                                <input type="email" id="reg-email" placeholder="you@example.com" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send OTP</button>
-                        </form>
-                    </div>
-
-                    <!-- Step 2: OTP Verification -->
-                    <div id="reg-step-2" class="hidden">
-                        <div class="info-box">
-                            <i class="fas fa-info-circle"></i>
-                            <p>An OTP has been sent to your email. Please enter it below.</p>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="reg-name"><i class="fas fa-user"></i> Full Name</label>
+                            <input type="text" id="reg-name" placeholder="John Doe" required>
                         </div>
-                        <form id="verify-otp-form">
-                            <div class="form-group">
-                                <label for="reg-otp"><i class="fas fa-key"></i> OTP Code</label>
-                                <input type="text" id="reg-otp" placeholder="123456" maxlength="6" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Verify OTP</button>
-                        </form>
-                    </div>
-
-                    <!-- Step 3: Password Setup -->
-                    <div id="reg-step-3" class="hidden">
-                        <form id="setup-password-form">
-                            <div class="form-group">
-                                <label for="reg-password"><i class="fas fa-lock"></i> Password</label>
-                                <input type="password" id="reg-password" placeholder="••••••••" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
-                                <input type="password" id="reg-confirm-password" placeholder="••••••••" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-user-check"></i> Complete Registration</button>
-                        </form>
-                    </div>
+                        <div class="form-group">
+                            <label for="reg-email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="reg-email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="reg-password" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                            <input type="password" id="reg-confirm-password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-user-check"></i> Register</button>
+                    </form>
 
                     <p class="auth-switch">Already have an account? <a href="#" id="go-to-login">Login</a></p>
                     <div id="register-error" class="error-message hidden"></div>

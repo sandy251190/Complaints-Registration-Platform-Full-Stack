@@ -2,84 +2,31 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../db');
 const { users } = require('../db/schema');
-const { sendOTP } = require('../services/email');
 const jwt = require('jsonwebtoken');
 const { eq } = require('drizzle-orm');
 
-// Helper to generate 6-digit OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
-
-// POST /api/auth/send-otp
-router.post('/send-otp', async (req, res) => {
-    const { name, email } = req.body;
-    if (!name || !email) {
-        return res.status(400).json({ error: 'Name and email are required' });
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
-
-    const otp = generateOTP();
-    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     try {
         // Check if user exists
         const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
         if (existingUser.length > 0) {
-            if (existingUser[0].is_verified) {
-                return res.status(400).json({ error: 'Email already registered' });
-            }
-            // Update OTP for unverified user
-            await db.update(users).set({ otp, otp_expiry: expiry }).where(eq(users.email, email));
-        } else {
-            // Create new unverified user
-            await db.insert(users).values({
-                name,
-                email,
-                password: '', // Will be set on register
-                otp,
-                otp_expiry: expiry,
-                is_verified: false
-            });
+            return res.status(400).json({ error: 'Email already registered' });
         }
 
-        // Send email
-        await sendOTP(email, otp);
-
-        res.json({ message: 'OTP sent successfully' });
-    } catch (error) {
-        console.error('Error in send-otp:', error);
-        res.status(500).json({ error: 'Failed to send OTP' });
-    }
-});
-
-// POST /api/auth/register
-router.post('/register', async (req, res) => {
-    const { email, otp, password } = req.body;
-    if (!email || !otp || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    try {
-        const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        if (userList.length === 0) {
-            return res.status(400).json({ error: 'User not found' });
-        }
-
-        const user = userList[0];
-        if (user.is_verified) {
-            return res.status(400).json({ error: 'User already verified' });
-        }
-
-        if (user.otp !== otp || user.otp_expiry < new Date()) {
-            return res.status(400).json({ error: 'Invalid or expired OTP' });
-        }
-
-        // Verify and update password
-        await db.update(users).set({
-            password: password, // Plain text as requested
-            is_verified: true,
-            otp: null,
-            otp_expiry: null
-        }).where(eq(users.email, email));
+        // Create new verified user
+        await db.insert(users).values({
+            name,
+            email,
+            password, // Plain text as requested
+            is_verified: true
+        });
 
         res.json({ message: 'Registration successful' });
     } catch (error) {
